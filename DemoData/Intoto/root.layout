@@ -1,0 +1,134 @@
+{
+  "signed": {
+    "_type": "layout",
+    "readme": "",
+    "expires": "2017-09-02T12:57:02Z",
+    "steps": [
+      {
+        "_type": "step",
+        "name": "fetch",
+        "expected_command": [
+          "dget",
+          "http://cdn.debian.net/debian/pool/main/g/grep/grep_2.12-2.dsc"
+        ],
+        "pubkeys": [
+          "12c55e46654c682d3ffd3b63492adf422e6812eb1ac41574d083b9e770d1e4c2"
+        ],
+        "threshold": 1,
+        "expected_materials": [
+          [
+            "DISALLOW",
+            "*"
+          ]
+        ],
+        "expected_products": [
+          [
+            "ALLOW",
+            "*"
+          ]
+        ]
+      },
+      {
+        "_type": "step",
+        "name": "extract",
+        "expected_command": [
+          "dpkg-source",
+          "-x",
+          "grep_2.12-2.dsc"
+        ],
+        "pubkeys": [
+          "12c55e46654c682d3ffd3b63492adf422e6812eb1ac41574d083b9e770d1e4c2"
+        ],
+        "threshold": 1,
+        "expected_materials": [
+          [
+            "MATCH",
+            "*",
+            "WITH",
+            "PRODUCTS",
+            "FROM",
+            "fetch"
+          ]
+        ],
+        "expected_products": [
+          [
+            "ALLOW",
+            "*"
+          ]
+        ]
+      },
+      {
+        "_type": "step",
+        "name": "modify",
+        "expected_command": [],
+        "pubkeys": [
+          "12c55e46654c682d3ffd3b63492adf422e6812eb1ac41574d083b9e770d1e4c2"
+        ],
+        "threshold": 1,
+        "expected_materials": [
+          [
+            "MATCH",
+            "*",
+            "WITH",
+            "PRODUCTS",
+            "FROM",
+            "extract"
+          ]
+        ],
+        "expected_products": [
+          [
+            "ALLOW",
+            "*"
+          ]
+        ]
+      },
+      {
+        "_type": "step",
+        "name": "build",
+        "expected_command": [
+          "dpkg-buildpackage",
+          "-us",
+          "-uc"
+        ],
+        "pubkeys": [
+          "12c55e46654c682d3ffd3b63492adf422e6812eb1ac41574d083b9e770d1e4c2"
+        ],
+        "threshold": 1,
+        "expected_materials": [
+          [
+            "MATCH",
+            "*",
+            "WITH",
+            "PRODUCTS",
+            "FROM",
+            "modify"
+          ]
+        ],
+        "expected_products": [
+          [
+            "ALLOW",
+            "*"
+          ]
+        ]
+      }
+    ],
+    "inspect": [],
+    "keys": {
+      "12c55e46654c682d3ffd3b63492adf422e6812eb1ac41574d083b9e770d1e4c2": {
+        "keyid": "12c55e46654c682d3ffd3b63492adf422e6812eb1ac41574d083b9e770d1e4c2",
+        "keytype": "rsa",
+        "keyval": {
+          "private": "",
+          "public": "-----BEGIN PUBLIC KEY-----\nMIIBojANBgkqhkiG9w0BAQEFAAOCAY8AMIIBigKC..."
+        }
+      }
+    }
+  },
+  "signatures": [
+    {
+      "keyid": "12c55e46654c682d3ffd3b63492adf422e6812eb1ac41574d083b9e770d1e4c2",
+      "method": "RSASSA-PSS",
+      "sig": "9c3a5609e79ea68f9d7aa4b72e5ab1f00b7773f06912b789add45da026f46621b9e..."
+    }
+  ]
+}

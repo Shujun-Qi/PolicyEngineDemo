@@ -1,0 +1,65 @@
+{
+  "signed": {
+    "_type": "link",
+    "name": "extract",
+    "command": [
+      "dpkg-source",
+      "-x",
+      "grep_2.12-2.dsc"
+    ],
+    "materials": {
+      "/home/lukas/demo/grep_2.12-2.debian.tar.bz2": {
+        "sha256": "37887d8aecec66e75365abd8c41be94f75e7a3acf1d6b27fc121584f47281525"
+      },
+      "/home/lukas/demo/grep_2.12-2.dsc": {
+        "sha256": "a6a63fd21da40d11ce6ae2bc6f633bd27cd206c2348b2ef306e1b68120f7e58e"
+      },
+      "/home/lukas/demo/grep_2.12.orig.tar.bz2": {
+        "sha256": "0119987171cd60b87c89557524fc6636bdad770dae71917adcaef6abffb1be67"
+      }
+    },
+    "products": {
+      "/home/lukas/demo/grep-2.12/.pc/.quilt_patches": {
+        "sha256": "0623de532bc23399e87e6c1914e8e90e999efbfd26b6b956666a493893739f0d"
+      },
+      "/home/lukas/demo/grep-2.12/.pc/.quilt_series": {
+        "sha256": "9afbb183d1b683d2770aecb9b379093804ccc56027f07ecf7fc252d5b93a8df2"
+      },
+      "/home/lukas/demo/grep-2.12/.pc/.version": {
+        "sha256": "53c234e5e8472b6ac51c1ae1cab3fe06fad053beb8ebfd8977b010655bfdd3c3"
+      },
+      "/home/lukas/demo/grep-2.12/.pc/02-man_rgrep.patch/doc/grep.in.1": {
+        "sha256": "0c933cbdacb739761f7cf9be1d9c0543b8a5cb0c1cf4031fc7add8e81146c1a6"
+      },
+      "/home/lukas/demo/grep-2.12/.pc/03-397262-dlopen-pcre.patch/configure": {
+        "sha256": "fda1f6c62f081999b74177f560e14db0b0b2f93cd632ed4a02f6ac2582fc27bf"
+      },
+      "/home/lukas/demo/grep-2.12/.pc/03-397262-dlopen-pcre.patch/src/pcresearch.c": {
+        "sha256": "08e24565e42cf5e2aeff2ca65cc4e3a8de5fa65260ea1a2d1ae872b45c3b6a25"
+      },
+      "/home/lukas/demo/grep-2.12/.pc/04-446854-grep.1.patch/doc/grep.in.1": {
+        "sha256": "90b74e6c5542b0db506c372f77c45ceab8d7289432cfe37bce11d611a4827a4d"
+      },
+      "/home/lukas/demo/grep-2.12/.pc/70-man_apostrophe.patch/doc/grep.in.1": {
+        "sha256": "eee01bf4de92df307b7f1b6fa740e1c0e0c8c28d6a12b6939ddec0708699da25"
+      },
+      "/home/lukas/demo/grep-2.12/.pc/80-587930-man-ere-reference.patch/doc/grep.in.1": {
+        "sha256": "30378876bf1c1a13449c993fb7a6406089f7f77a34f96fed5c6c742e75a395b6"
+      },
+      "...": "..."
+    },
+    "byproducts": {
+      "return_value": 0,
+      "stdout": "dpkg-source: info: extracting grep in grep-2.12\ndpkg-source: info: ...",
+      "stderr": "gpgv: Signature made Sun 13 May 2012 08:23:12 AM EDT using DSA key ..."
+    },
+    "environment": {}
+  },
+  "signatures": [
+    {
+      "keyid": "12c55e46654c682d3ffd3b63492adf422e6812eb1ac41574d083b9e770d1e4c5",
+      "method": "RSASSA-PSS",
+      "sig": "9b89cf0a74a1d53359460982cdc3dcbdef2b291a284b977fadb839501d7324fe581..."
+    }
+  ]
+}

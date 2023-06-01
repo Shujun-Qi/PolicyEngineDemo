@@ -1,0 +1,35 @@
+{
+  "signed": {
+    "_type": "link",
+    "name": "fetch",
+    "command": [
+      "dget",
+      "http://cdn.debian.net/debian/pool/main/g/grep/grep_2.12-2.dsc"
+    ],
+    "materials": {},
+    "products": {
+      "/home/lukas/demo/grep_2.12-2.debian.tar.bz2": {
+        "sha256": "37887d8aecec66e75365abd8c41be94f75e7a3acf1d6b27fc121584f47281525"
+      },
+      "/home/lukas/demo/grep_2.12-2.dsc": {
+        "sha256": "a6a63fd21da40d11ce6ae2bc6f633bd27cd206c2348b2ef306e1b68120f7e58e"
+      },
+      "/home/lukas/demo/grep_2.12.orig.tar.bz2": {
+        "sha256": "0119987171cd60b87c89557524fc6636bdad770dae71917adcaef6abffb1be67"
+      }
+    },
+    "byproducts": {
+      "return_value": 1,
+      "stdout": "dget: retrieving http://cdn.debian.net/debian/pool/main/g/grep/grep...",
+      "stderr": "--2017-08-08 11:05:06--  http://cdn.debian.net/debian/pool/main/g/g..."
+    },
+    "environment": {}
+  },
+  "signatures": [
+    {
+      "keyid": "12c55e46654c682d3ffd3b63492adf422e6812eb1ac41574d083b9e770d1e4c5",
+      "method": "RSASSA-PSS",
+      "sig": "a0d3237a59a96343b2e2caee2bf0e27a249a01f796c3fec53f184fc2720b44dd7b2..."
+    }
+  ]
+}
