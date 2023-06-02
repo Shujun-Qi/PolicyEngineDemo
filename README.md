@@ -11,3 +11,7 @@ cd home/
 cargo run DemoData/Intoto/
 cargo run DemoData/Intoto_fake/
 ```
+
+## Design
+
+![plot](./Figs/Chainguard-Workspace.png)
