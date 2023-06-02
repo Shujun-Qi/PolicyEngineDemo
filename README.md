@@ -12,6 +12,7 @@ cargo run DemoData/Intoto/
 cargo run DemoData/Intoto_fake/
 ```
 
-## Design
+## Design Ideas 
+This is a simple first-draft design blueprint.
 
 ![plot](./Figs/Chainguard-Workspace.png)
