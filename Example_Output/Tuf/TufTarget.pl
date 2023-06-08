@@ -1,0 +1,4 @@
+:- consult('TufSnapshot.pl').
+tuf:target_delegation('65171251a9aff5a8b3143a813481cb07f6e0de4eb197c767837fe4491b739093', '"c8022fa1e9b9cb239a6b362bbdffa9649e61ad2cb699d2e4bc4fdf7930a0e64a"', '"role1"', '["file3.txt"]').
+tuf:target_delegation('65171251a9aff5a8b3143a813481cb07f6e0de4eb197c767837fe4491b739093', '65171251a9aff5a8b3143a813481cb07f6e0de4eb197c767837fe4491b739093', 'target', 'file1.txt').
+tuf:target_delegation('65171251a9aff5a8b3143a813481cb07f6e0de4eb197c767837fe4491b739093', '65171251a9aff5a8b3143a813481cb07f6e0de4eb197c767837fe4491b739093', 'target', 'file2.txt').
