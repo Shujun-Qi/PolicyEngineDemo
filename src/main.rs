@@ -1,6 +1,7 @@
 use std::env;
-mod intoto;
-mod tuf;
+pub mod intoto;
+pub mod tuf;
+pub mod types;
 
 fn main() {
     let args: Vec<String> = env::args().collect();
