@@ -82,7 +82,7 @@ cargo run tuf DemoData/tuf/
 ```
 
 ## Example Output
-The output is in the `Example_Output` folder. The `Check.pl` file is the matching procedure, all other files are facts and predicates from trust metadata. 
+The output is in the `Example_Output` folder. The [In-toto.pl](Example_Output/Intoto/Intoto.pl) file is the matching procedure, all other files are facts and predicates from trust metadata. 
 ## Design Ideas 
 This is a simple first-draft design blueprint.
 
