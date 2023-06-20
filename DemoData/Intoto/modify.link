@@ -64,7 +64,9 @@
       "...": "..."
     },
     "byproducts": {
-      "return_value": null
+      "return_value": null,
+      "stdout": null,
+      "stderr": null
     },
     "environment": {}
   },
