@@ -1,6 +1,74 @@
 # PolicyEngineDemo
 This is a simple demo for a logic-based policy engine design. Currently this demo shows two simple examples for enforcing policy checks on TUF and In-toto trust metadata.
 
+
+## Draft Policy Language Syntax
+We define a draft syntax for our policy language as 
+
+```
+speaker(conditions):relation(facts).
+```
+
+=>
+
+```
+struct Rules{
+    speaker: String,
+    condition: Vec<String>,
+    relation: String,
+    facts: Vec<String>
+}
+```
+
+A simple translation of the above predicate/rule is "a speaker says a relation between several facts under a set of conditions" (See [Intoto_example](Rules/Intoto.rule) as an example).
+### speaker
+Speaker is the owner of a predicate/rule. In trust logic, a speaker is an authenticated principal whose identity is unique and verifiable. 
+
+Currently this demo uses the hash of the content as the principal id for three reasons:
+* Trust metadata format (Intoto, Tuf) contains unnamed/randomly named JSON objects, which need a unique self-verifiable identifier
+* Tuf infrastructure requires file hash validation 
+* Intoto and Tuf allows multiple signatures from different keys for a single file, which makes it hard for authority delegation without a central root.
+
+However, the metadata owner can override the choice of root speaker by declaring a rule to set a root speaker of the file. Internal unnamed objects will always use hash as the identifier.
+
+### facts
+Facts are a set of properties in the trust metadata. In our language, we have 4 basic types of the fact: `String`, `Number`, `Array`, `Object`.
+
+The first 3 types are generic property types that directly reflects the value in the predicates. The `Object` is a principal of certain properties and will be replaced by its principal id when we capture it in this predicate.
+
+### relation
+A relation is a rule or predicate about the facts. Under the same domain/namespace, a relation should have a consistent format(number and sequence of the facts) regardless of the speaker or facts for the ease of matching procedure.
+
+
+### conditions
+Conditions are optional. They define the circumstances where the claim from speaker to the relation of facts is valid. The conditions can also be used as a simple pattern matching style expression of policy or rules.
+
+
+## Todo List and Challenges?
+
+- [ ] Compiler of the policy engine
+    - [x] a general parser for the trust metadata 
+        - [x] in JSON format
+        - [ ] support for ymal format?
+    
+- [ ] Logic core of the policy engine
+    - [x] a general parser for policy language
+        - [x] a struct of single predicate
+        - [x] speaker identifier
+    - [ ] matching engine
+
+- [ ] Syntax of our policy language
+    - [ ] predicates
+        - [ ] speaker
+        - [ ] relation
+        - [ ] facts
+        - [ ] conditions
+    - [ ] facts
+        - [x] String
+        - [x] Number
+        - [ ] Array
+        - [ ] Object
+
 ## RUN
 This demo requires rust and swi-prolog installation. For simplicity, a docker container is recommanded.
 
@@ -8,9 +76,9 @@ This demo requires rust and swi-prolog installation. For simplicity, a docker co
 ```
 docker run -it --rm --name demo -v $PWD:/home iqicheng/rust-logic-engine-demo bash
 cd home/
-cargo run intoto DemoData/Intoto/
-cargo run intoto DemoData/Intoto_fake/
-cargo run tuf DemoData/TUF/
+cargo run Intoto DemoData/Intoto/
+cargo run Intoto DemoData/Intoto_fake/
+cargo run tuf DemoData/tuf/
 ```
 
 ## Example Output
