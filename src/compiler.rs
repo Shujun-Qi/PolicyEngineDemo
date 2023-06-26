@@ -10,9 +10,10 @@ use regex::Regex;
 #[derive(Debug, Default)]
 struct Rules{
     speaker: String,
-    condition: Vec<(String, String)>,
+    // condition: Vec<(String, String)>,
     relation: String,
-    facts: Vec<String>
+    flag: bool
+    // facts: Vec<String>
 }
 
 
@@ -28,96 +29,149 @@ fn recursive_write(speaker: &str, id:&str,map: HashMap<String,Value>, file_path:
         .unwrap();
 
     let mut output_string: String = "".to_string().to_owned();
-    // println!("{:?}", rules);
-    let sp_rules: Vec<&Rules> = rules.into_iter().filter(|&r| r.speaker == speaker.clone()).filter(|&a| (a.condition == [])||(map.get(&a.condition[0].0).unwrap().to_string().replace("\"", "") == a.condition[0].1)).collect();
-    println!("{:?}", sp_rules);
-    if sp_rules.len() == 0{
-        return Ok(());
-    }
-    let rule = sp_rules[0];
-    if rule.facts[0] == "$"{
-        if !flag{
-            for (key, value) in map{
-                if value.is_object(){
-                    // let hash: String = my_hash(value.to_string()).to_string();
-                    output_string = output_string+&key+",";
-                    let newmap: HashMap<String, Value> = from_value(value)?;
-                    let _ = recursive_write(speaker, &key, newmap, file_path, rules, true);
-                }
-            }
-        }
-        else{
-            for key in &rule.facts{
-                if key == "$"{
-                    continue;
-                }
-                let value = map.get(key).unwrap();
-                if value.is_object(){
-                    let hash: String = my_hash(value.to_string()).to_string();
-                    output_string = output_string+key+",";
-                    let newmap: HashMap<String, Value> = from_value(value.clone())?;
-                    let _ = recursive_write(key, &hash, newmap, file_path, rules, false);
-                }
-                else if value.is_array(){
-                    output_string = output_string+"[";
-                    // println!("{},{},Array", speaker, hash);
-                    let array : Vec<Value> = from_value(value.clone())?;
-                    for item in array{
-                        if item.is_object(){
-                            let hash: String = my_hash(item.to_string()).to_string();
-                            output_string = output_string+&hash+",";
-                            let newmap: HashMap<String, Value> = from_value(item)?;
-                            let _ = recursive_write(key, &hash, newmap, file_path, rules, false);
-                        }
-                        else{
-                            output_string = output_string+&item.to_string()+",";
-                        }
-                    }
-                    output_string.pop();
-                    output_string = output_string+"],";
-                }
-                else {
-                    output_string = output_string+&value.to_string()+",";
-                }
-            }
+    
+    let mut relation = "sign";
+    let mut flag: bool = false;
+    for rule in rules{
+        if speaker == rule.speaker{
+            relation = &rule.relation;
+            flag = rule.flag;
         }
     }
-    else{
-        for key in &rule.facts{
-            println!("{}", key);
-            let value = map.get(key).unwrap();
-            if value.is_object(){
+    for (key, value) in map{
+        if value.is_object(){
+            if flag{
+                output_string  = output_string+&key+",";
+                let newmap: HashMap<String, Value> = from_value(value.clone())?;
+                let _ = recursive_write(&key, &key, newmap, file_path, rules, false);
+            }
+            else{
                 let hash: String = my_hash(value.to_string()).to_string();
                 output_string = output_string+&hash+",";
                 let newmap: HashMap<String, Value> = from_value(value.clone())?;
-                // println!("{:?}", newmap);
-                let _ = recursive_write(key, &hash, newmap, file_path, rules, false);
+                let _ = recursive_write(&key, &hash, newmap, file_path, rules, false);
             }
-            else if value.is_array(){
-                output_string = output_string+"[";
-                // println!("{},{},Array", speaker, hash);
-                let array : Vec<Value> = from_value(value.clone())?;
-                for item in array{
-                    if item.is_object(){
-                        let hash: String = my_hash(item.to_string()).to_string();
-                        output_string = output_string+&hash+",";
-                        let newmap: HashMap<String, Value> = from_value(item)?;
-                        let _ = recursive_write(key, &hash, newmap, file_path, rules, false);
-                    }
-                    else{
-                        output_string = output_string.to_owned()+&item.to_string()+",";
-                    }
+            
+            
+        }
+        else if value.is_array(){
+            
+            // println!("{},{},Array", speaker, hash);
+            let hash: String = my_hash(value.to_string()).to_string();
+            let array : Vec<Value> = from_value(value.clone())?;
+            let mut obj = false;
+            for item in array{
+                if item.is_object(){
+                    output_string = output_string+&hash+",";
+                    let newmap: HashMap<String, Value> = from_value(item)?;
+                    let _ = recursive_write(&key, &hash, newmap, file_path, rules, false);
+                    obj = true;
                 }
+                else{
+                    output_string = output_string+"[";
+                    output_string = output_string+&item.to_string()+",";
+                    
+                }
+            }
+            if !obj{
                 output_string.pop();
                 output_string = output_string+"],";
-            }
-            else {
-                output_string = output_string+&value.to_string()+",";
-            }
+            }   
+        }
+        else {
+            output_string = output_string+&value.to_string()+",";
         }
     }
+    // println!("{:?}", rules);
+    // let sp_rules: Vec<&Rules> = rules.into_iter().filter(|&r| r.speaker == speaker.clone()).filter(|&a| (a.condition == [])||(map.get(&a.condition[0].0).unwrap().to_string().replace("\"", "") == a.condition[0].1)).collect();
+    // println!("{:?}", sp_rules);
+    // if sp_rules.len() == 0{
+    //     return Ok(());
+    // }
+    // let rule = sp_rules[0];
+    // if rule.facts[0] == "$"{
+    //     if !flag{
+    //         for (key, value) in map{
+    //             if value.is_object(){
+    //                 // let hash: String = my_hash(value.to_string()).to_string();
+    //                 output_string = output_string+&key+",";
+    //                 let newmap: HashMap<String, Value> = from_value(value)?;
+    //                 let _ = recursive_write(speaker, &key, newmap, file_path, rules, true);
+    //             }
+    //         }
+    //     }
+    //     else{
+    //         for key in &rule.facts{
+    //             if key == "$"{
+    //                 continue;
+    //             }
+    //             let value = map.get(key).unwrap();
+                // if value.is_object(){
+                //     let hash: String = my_hash(value.to_string()).to_string();
+                //     output_string = output_string+key+",";
+                //     let newmap: HashMap<String, Value> = from_value(value.clone())?;
+                //     let _ = recursive_write(key, &hash, newmap, file_path, rules, false);
+                // }
+                // else if value.is_array(){
+                //     output_string = output_string+"[";
+                //     // println!("{},{},Array", speaker, hash);
+                //     let array : Vec<Value> = from_value(value.clone())?;
+                //     for item in array{
+                //         if item.is_object(){
+                //             let hash: String = my_hash(item.to_string()).to_string();
+                //             output_string = output_string+&hash+",";
+                //             let newmap: HashMap<String, Value> = from_value(item)?;
+                //             let _ = recursive_write(key, &hash, newmap, file_path, rules, false);
+                //         }
+                //         else{
+                //             output_string = output_string+&item.to_string()+",";
+                //         }
+                //     }
+                //     output_string.pop();
+                //     output_string = output_string+"],";
+                // }
+                // else {
+                //     output_string = output_string+&value.to_string()+",";
+                // }
+    //         }
+    //     }
+    // }
+    // else{
+    //     for key in &rule.facts{
+    //         println!("{}", key);
+    //         let value = map.get(key).unwrap();
+    //         if value.is_object(){
+    //             let hash: String = my_hash(value.to_string()).to_string();
+    //             output_string = output_string+&hash+",";
+    //             let newmap: HashMap<String, Value> = from_value(value.clone())?;
+    //             // println!("{:?}", newmap);
+    //             let _ = recursive_write(key, &hash, newmap, file_path, rules, false);
+    //         }
+    //         else if value.is_array(){
+    //             output_string = output_string+"[";
+    //             // println!("{},{},Array", speaker, hash);
+    //             let array : Vec<Value> = from_value(value.clone())?;
+    //             for item in array{
+    //                 if item.is_object(){
+    //                     let hash: String = my_hash(item.to_string()).to_string();
+    //                     output_string = output_string+&hash+",";
+    //                     let newmap: HashMap<String, Value> = from_value(item)?;
+    //                     let _ = recursive_write(key, &hash, newmap, file_path, rules, false);
+    //                 }
+    //                 else{
+    //                     output_string = output_string.to_owned()+&item.to_string()+",";
+    //                 }
+    //             }
+    //             output_string.pop();
+    //             output_string = output_string+"],";
+    //         }
+    //         else {
+    //             output_string = output_string+&value.to_string()+",";
+    //         }
+    //     }
+    // }
     output_string.pop();
-    if let Err(e) = writeln!(output_file, "{}:{}({}).",id, rule.relation ,output_string) {
+    if let Err(e) = writeln!(output_file, "{}({},[{}]).",relation, id ,output_string) {
         eprintln!("Couldn't write to file: {}", e);
     }
     println!("The output is ({}).", {output_string});
@@ -168,35 +222,41 @@ fn parse_rules(rule_file:&str) -> Vec<Rules>{
     let rule_contents = fs::read_to_string(rule_file)
         .expect("Something went wrong reading the file");
     let binding = rule_contents.trim().replace("\n", "").replace("\r", "");
-    let rules: Vec<&str> = binding.split(".").collect();
+    let rules: Vec<&str> = binding.split(".").filter(|s| !s.is_empty()).collect();
     for rule in rules{
-        if rule == "" {
-            continue;
-        }
-        let parts: Vec<&str> = rule.split(":").collect();
+        // if rule == "" {
+        //     continue;
+        // }
+        let parts: Vec<&str> = rule.split(":").filter(|s| !s.is_empty()).collect();
         let speaker = parts[0];
-        let relation = parts[1];
-        let token_re = Regex::new(r"\((.*?)\)").unwrap();
-        let sp:Vec<&str> = speaker.split("(").collect();
-        let rt:Vec<&str> = relation.split("(").collect();
-        let mut new_rule = Rules{..Default::default()};
-        new_rule.relation = rt[0].to_string();
-        new_rule.speaker = sp[0].to_string();
-        for cap in token_re.captures_iter(speaker){
-            // println!("{}", &cap[1]);
-            let conditions: Vec<&str> = cap[1].split(",").collect();
-            for cond in conditions{
-                let pair: Vec<&str> = cond.split("=").collect();
-                new_rule.condition.push((pair[0].to_owned(),pair[1].to_owned()));
-            }
-        }
-        for cap in token_re.captures_iter(relation){
-            // println!("{}", &cap[1]);
-            let facts: Vec<&str> = cap[1].split(",").collect();
-            for fact in facts{
-                new_rule.facts.push(fact.to_string());
-            }
-        }
+        let mut relation = "sign";
+        if parts.len() > 1{
+            relation = parts[1];
+        } 
+        let new_rule = Rules { speaker: speaker.replace("$", ""), relation: relation.to_owned(), flag: speaker.contains("$") };
+        
+        // let token_re = Regex::new(r"\((.*?)\)").unwrap();
+        // let sp:Vec<&str> = speaker.split("(").collect();
+        // let rt:Vec<&str> = relation.split("(").collect();
+
+        // let mut new_rule = Rules{..Default::default()};
+        // new_rule.relation = rt[0].to_string();
+        // new_rule.speaker = sp[0].to_string();
+        // for cap in token_re.captures_iter(speaker){
+        //     // println!("{}", &cap[1]);
+        //     let conditions: Vec<&str> = cap[1].split(",").collect();
+        //     for cond in conditions{
+        //         let pair: Vec<&str> = cond.split("=").collect();
+        //         new_rule.condition.push((pair[0].to_owned(),pair[1].to_owned()));
+        //     }
+        // }
+        // for cap in token_re.captures_iter(relation){
+        //     // println!("{}", &cap[1]);
+        //     let facts: Vec<&str> = cap[1].split(",").collect();
+        //     for fact in facts{
+        //         new_rule.facts.push(fact.to_string());
+        //     }
+        // }
         types.push(new_rule);
     }
     return types;
@@ -206,7 +266,7 @@ pub fn build_facts_library(dirname:&str, sourcetype: &str){
     
     // let re: Regex = Regex::new(r"\((.+)\)").unwrap();
     
-    let rule_file = "Rules/".to_owned()+sourcetype+".rule";
+    let rule_file = "Rules/".to_owned()+sourcetype+".schema";
     let rules = parse_rules(&rule_file);
     println!("{:?}", rules);
     let paths = fs::read_dir(dirname).unwrap();

@@ -1,10 +1,30 @@
-signatures:sig(keyid,method,sig).
-signed(_type=layout):layout(_type,readme,expires,steps,inspect,keys).
-signed(_type=link):link(_type,name,command,materials,byproducts,environment).
-steps:steps(_type,name,expected_command,pubkeys,threshold,expected_materials,expected_products).
-keys:keys($,keyid,keytype,keyval).
-keyval:keyval(private,public).
-materials:materials($,sha256).
-products:products($,sha256).
-byproducts:byproducts(return_value,stdout,stderr).
-root:sign(signed,signatures).
+:-module(Intoto, [
+    root_key/2,
+    contains/2,
+    validate/2
+]).
+
+root_key(R, H):-
+    member(R, L1),
+    sign(S, L1),
+    member(S, L2),
+    signatures(K, L2),
+    member(K, L3),
+    sign(H, L3),
+    #hash(H),
+    key_info(R, [R|_]).
+
+contains(K, P):-
+    sign(K, L),
+    (
+        member(P, L) -> 
+        true
+        ;
+        member(K1, L), 
+        contains(K1, P)
+        ;
+    )
+
+validate(R, P):-
+    root_key(R, H),
+    contains(H, P).

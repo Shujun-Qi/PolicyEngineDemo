@@ -1,0 +1,16 @@
+validate(F):-
+    tuf:role_key(K, F),
+    intoto:root_key(R, H),
+    tuf:contains(K, H),
+    intoto:materials(R, ML),
+    forall(member(M, ML), assertz(check_file(K, M))),
+    intoto:products(R, PL),
+    forall(member(P, PL), assertz(check_file(K, P))).
+    
+check_file(K, F):-
+    sign(F, FL),
+    tuf:role_key(K, F),
+    member(H, FL),
+    tuf:hash(F, H).
+
+validate("build.link").

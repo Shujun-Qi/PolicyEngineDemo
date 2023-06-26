@@ -2,11 +2,13 @@
 This is a simple demo for a logic-based policy engine design. Currently this demo shows two simple examples for enforcing policy checks on TUF and In-toto trust metadata.
 
 
-## Draft Policy Language Syntax
-We define a draft syntax for our policy language as 
+## Draft Policy Language Syntax *
+We separate the language syntax in two parts a schema format and a policy format
+
+The schema format shows how to interpret the trust metadata file and build a fact library. 
 
 ```
-speaker(conditions):relation(facts).
+speaker([condition])$:relation([facts]).
 ```
 
 =>
@@ -16,11 +18,30 @@ struct Rules{
     speaker: String,
     condition: Vec<String>,
     relation: String,
-    facts: Vec<String>
+    facts: Vec<String>,
+    flag: bool
 }
 ```
 
-A simple translation of the above predicate/rule is "a speaker says a relation between several facts under a set of conditions" (See [Intoto_example](Rules/Intoto.rule) as an example).
+A simple translation of the above schema is "a speaker says a relation between several facts under a set of conditions" (See [Intoto_example](Rules/Intoto.schema) as an example). Each JSON object in the trust metatdata file is translated into a logic fact/predicate in the format of `relation(speaker, [facts]).` If there is no declared relation for a speaker, the default relation `sign` is used.
+
+The policy format inherits the logic language syntax to validate against facts or define rules to reason about facts. 
+
+For example, the following rule from [tuf_example](Rules/tuf.rule) validates that a filename binds with a key based on hash matching and key delegation.
+```
+role_key(K, F):-
+    sign(F, FL),
+    hash(K1, KL1),
+    member(H, KL1),
+    member(K1, FL),
+    meta(K2, ML),
+    member(F, ML),
+    signatures(K3, KL3),
+    member(K, KL3),
+    sign(H, HL),
+    member(K3, HL).
+```
+
 ### speaker
 Speaker is the owner of a predicate/rule. In trust logic, a speaker is an authenticated principal whose identity is unique and verifiable. 
 

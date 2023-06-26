@@ -1,33 +1,32 @@
-signed:Object
-_type:String
-readme:String
-expires:String
-steps:Array/Object
-name:String
-expected_command:Array/String
-pubkeys:Array/String
-threshold:Int
-expected_materials:Array/Array/String
-expected_products:Array/Array/String
-inspect:Array
-keys:Object
-keyid:String
-keytype:String
-keyval:Object
-private:String
-public:String
-signatures:Array/Object
-method:String
-sig:String
-command:Array/String
-materials:Object
-sha256:String
-products:Object
-byproducts:Object
-return_value:Int
-stdout:String
-stderr:String
-environment:Object
+:-module(tuf, [
+    role_key/2,
+    contains/2,
+    validate/2
+]).
+#rule for check the file name binds with a key and the hashes match
+role_key(K, F):-
+    sign(F, FL),
+    hash(K1, KL1),
+    member(H, KL1),
+    member(K1, FL),
+    meta(K2, ML),
+    member(F, ML),
+    signatures(K3, KL3),
+    member(K, KL3),
+    sign(H, HL),
+    member(K3, HL).
 
+contains(K, P):-
+    sign(K, L),
+    (
+        member(P, L) -> 
+        true
+        ;
+        member(K1, L), 
+        contains(K1, P)
+        ;
+    )
 
-
+validate(R, P):-
+    role_key(R, H),
+    contains(H, P).
